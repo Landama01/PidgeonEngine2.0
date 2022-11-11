@@ -10,7 +10,7 @@ Project Forked from: https://github.com/laiapachon/ThomasEngine
 Andreu Landa: https://github.com/Landama01
 ## Using Engine
 
-# Camera Controls:
+### Camera Controls:
 - LSHIFT: Use controls faster
 - F: Front view
 - T: Moving camera Up
