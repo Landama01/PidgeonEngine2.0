@@ -13,8 +13,8 @@ Andreu Landa: https://github.com/Landama01
 # Camera Controls:
 - LSHIFT: Use controls faster
 - F: Front view
-- T:Moving camera Up
-- G:Moving camera Down
+- T: Moving camera Up
+- G: Moving camera Down
 - W: Moving camera to Front
 - S: Moving camera Back
 - A: Moving camera Left
