@@ -3,6 +3,7 @@
 #include "glmath.h"
 #include "Geometry/Frustum.h"
 #include "Geometry/LineSegment.h"
+#include "Geometry/Triangle.h"
 
 
 class Camera3D : public Module

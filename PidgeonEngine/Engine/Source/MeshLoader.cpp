@@ -44,21 +44,17 @@ Mesh* MeshLoader::LoadMesh(aiMesh* importedMesh, uint oldUID)
 
 	Mesh* mesh = new Mesh(UID);
 
-	// copy vertices
-	mesh->numVertex = importedMesh->mNumVertices;
-	//mesh->vertices.resize(mesh->numVertex * sizeof(float) * 3);
+	mesh->num_vertex = importedMesh->mNumVertices;
 
-	mesh->numTexCoords = importedMesh->mNumVertices;
-	//mesh->texCoords.resize(mesh->numTexCoords * sizeof(float) * 2);
+	mesh->num_texcoords = importedMesh->mNumVertices;
 
-	mesh->numNormals = importedMesh->mNumVertices;
-	//mesh->normals.resize(mesh->numNormals * sizeof(float) * 3);
+	mesh->num_normals = importedMesh->mNumVertices;
 
-	for (size_t i = 0; i < mesh->numVertex; i++)
+	for (size_t i = 0; i < mesh->num_vertex; i++)
 	{
-		mesh->vertices.push_back(importedMesh->mVertices[i].x);
-		mesh->vertices.push_back(importedMesh->mVertices[i].y);
-		mesh->vertices.push_back(importedMesh->mVertices[i].z);
+		mesh->vertex.push_back(importedMesh->mVertices[i].x);
+		mesh->vertex.push_back(importedMesh->mVertices[i].y);
+		mesh->vertex.push_back(importedMesh->mVertices[i].z);
 
 		if (importedMesh->HasNormals())
 		{
@@ -68,8 +64,8 @@ Mesh* MeshLoader::LoadMesh(aiMesh* importedMesh, uint oldUID)
 		}
 		if (importedMesh->HasTextureCoords(0))
 		{
-			mesh->texCoords.push_back(importedMesh->mTextureCoords[0][i].x);
-			mesh->texCoords.push_back(importedMesh->mTextureCoords[0][i].y);
+			mesh->texcoords.push_back(importedMesh->mTextureCoords[0][i].x);
+			mesh->texcoords.push_back(importedMesh->mTextureCoords[0][i].y);
 		}
 	}
 
@@ -78,11 +74,10 @@ Mesh* MeshLoader::LoadMesh(aiMesh* importedMesh, uint oldUID)
 		LOG(LogType::L_ERROR, "ADD VERTEX COLORS");
 	}
 
-	// Generate indices
 	if (importedMesh->HasFaces())
 	{
-		mesh->numIndices = importedMesh->mNumFaces * 3;
-		mesh->indices.resize(mesh->numIndices);
+		mesh->num_indices = importedMesh->mNumFaces * 3;
+		mesh->index.resize(mesh->num_indices);
 
 		for (uint j = 0; j < importedMesh->mNumFaces; ++j)
 		{
@@ -92,16 +87,16 @@ Mesh* MeshLoader::LoadMesh(aiMesh* importedMesh, uint oldUID)
 			}
 			else
 			{
-				memcpy(&mesh->indices[j * 3], importedMesh->mFaces[j].mIndices, 3 * sizeof(uint));
+				memcpy(&mesh->index[j * 3], importedMesh->mFaces[j].mIndices, 3 * sizeof(uint));
 			}
 		}
 	}
 
 	mesh->LoadToMemory();
 
-	LOG(LogType::L_NORMAL, "New mesh with %d vertices", mesh->numVertex);
-	LOG(LogType::L_NORMAL, "New mesh with %d normals", mesh->numNormals);
-	LOG(LogType::L_NORMAL, "New mesh with %d texture coords", mesh->numTexCoords);
+	LOG(LogType::L_NORMAL, "New mesh with %d vertices", mesh->num_vertex);
+	LOG(LogType::L_NORMAL, "New mesh with %d normals", mesh->num_normals);
+	LOG(LogType::L_NORMAL, "New mesh with %d texture coords", mesh->num_texcoords);
 
 	return mesh;
 }

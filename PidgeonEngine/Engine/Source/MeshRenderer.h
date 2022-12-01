@@ -11,6 +11,7 @@ public:
 
 	void Update() override;
 	void RenderMesh();
+	void SetBounds();
 	void OnEditor() override;
 
 	Mesh* mesh;

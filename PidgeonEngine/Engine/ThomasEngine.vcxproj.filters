@@ -637,6 +637,9 @@
     <ClInclude Include="Source\GameTab.h">
       <Filter>Sources\Modules\Editor\TabsEditor</Filter>
     </ClInclude>
+    <ClInclude Include="Source\GO_Camera.h">
+      <Filter>Sources\GameObjects\Components</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Main.cpp">
@@ -872,6 +875,9 @@
     </ClCompile>
     <ClCompile Include="Source\GameTab.cpp">
       <Filter>Sources\Modules\Editor\TabsEditor</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\GO_Camera.cpp">
+      <Filter>Sources\GameObjects\Components</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

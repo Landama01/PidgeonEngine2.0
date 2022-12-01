@@ -8,6 +8,8 @@
 #include "Transform.h"
 #include "Material.h"
 
+#include "Geometry/Sphere.h"
+
 #include "ImGui/imgui.h"
 
 MeshRenderer::MeshRenderer(GameObject* obj) : Component(obj), mesh(nullptr)
@@ -54,10 +56,10 @@ void MeshRenderer::OnEditor()
 	if (ImGui::CollapsingHeader("Mesh Info", ImGuiTreeNodeFlags_DefaultOpen))
 	{
 		// Print mesh information
-		IMGUI_PRINT("Vertices: ", "%i", mesh->numVertex);
-		IMGUI_PRINT("Indices: ", "%i", mesh->numIndices);
-		IMGUI_PRINT("Texture coords: ", "%i", mesh->numIndices);
-		IMGUI_PRINT("Normals: ", "%i", mesh->numNormals);
+		IMGUI_PRINT("Vertices: ", "%i", mesh->num_vertex);
+		IMGUI_PRINT("Indices: ", "%i", mesh->num_indices);
+		IMGUI_PRINT("Texture coords: ", "%i", mesh->num_texcoords);
+		IMGUI_PRINT("Normals: ", "%i", mesh->num_normals);
 		// You can enable/disable the mode debug
 		ImGui::Checkbox("Vertex Normals", &vertexNormals);
 		ImGui::Checkbox("Face Normals", &faceNormals);

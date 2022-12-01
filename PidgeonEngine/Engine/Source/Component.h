@@ -25,7 +25,7 @@ public:
 	void SetType(ComponentType type) { this->type = type; };
 	
 	GameObject* GetOwner() { return owner; };
-private:
+public:
 	bool active = true;
 
 	ComponentType type = ComponentType::UNKNOWN;

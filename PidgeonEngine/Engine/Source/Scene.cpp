@@ -6,6 +6,7 @@
 #include "Component.h"
 #include "Transform.h"
 #include "MeshRenderer.h"
+#include "GO_Camera.h"
 
 //Modules
 #include "Input.h"
@@ -15,6 +16,8 @@
 #include "GameObject.h"
 #include "Inspector.h"
 #include "ResourceMesh.h"
+
+#include <queue>
 
 #include"MathGeoLib/include/Math/Quat.h"
 
@@ -37,7 +40,7 @@ bool Scene::Init()
 
 bool Scene::Start()
 {
-	app->resourceManager->ImportFile("BakerHouse.fbx");
+	app->resourceManager->ImportFile("Street2.fbx");
 
 	Transform* transformChimney = root->GetChildren()[0]->GetChildren()[0]->transform;
 	Transform* transformBakerhouse = root->GetChildren()[0]->GetChildren()[1]->transform;
@@ -71,6 +74,26 @@ update_status Scene::Update(float dt)
 		app->editor->GetGameObjectSelected()->Destroy();
 
 	UpdateGameObjects();
+
+	/*if (App->editor->GO_camera != nullptr)
+	{
+		App->editor->GO_camera->DrawCamera();
+		std::queue<GameObject*> q;
+		for (GameObject* child : root->childrens)
+		{
+			q.push(child);
+		}
+		while (!q.empty())
+		{
+			GameObject* go = q.front();
+			go->Update();
+			q.pop();
+			for (GameObject* child : go->childrens)
+			{
+				q.push(child);
+			}
+		}
+	}*/
 
 	return update_status::UPDATE_CONTINUE;
 }

@@ -3,6 +3,9 @@
 #include<vector>
 #include<string>
 
+#include "Geometry/AABB.h"
+#include "Geometry/OBB.h"
+
 class Component;
 enum class ComponentType;
 class Transform;
@@ -14,6 +17,18 @@ public:
 	virtual ~GameObject();
 
 	void Update();
+
+	template<class T> T* GetComponent()
+	{
+		T* component = nullptr;
+		for (Component* c : components)
+		{
+			component = dynamic_cast<T*>(c);
+			if (component)
+				break;
+		}
+		return component;
+	}
 
 	Component* AddComponent(ComponentType type);
 	Component* GetComponent(ComponentType type);
@@ -41,11 +56,14 @@ public:
 	bool isStatic = false;
 	std::string name;
 
-private:
+public:
 	GameObject* parent;
 	std::vector<GameObject*> childrens;
 	std::vector<Component*> components;
 
 	bool showChildrens = false;
 	bool pendingToDelete = false;
+
+	OBB globalOBB;
+	AABB globalAABB;
 };

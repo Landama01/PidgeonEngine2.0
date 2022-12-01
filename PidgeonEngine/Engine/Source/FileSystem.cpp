@@ -6,9 +6,6 @@
 #include "DevIL\include\ilut.h"
 #include "MeshLoader.h"
 
-// This pragma comment shouldn't be necessary because it is already included in additional directories but if not give fail 
-//#pragma comment( lib, "DevIL/libx86/ILUT.lib" )
-
 // File System Init
 void FileSystem::FSInit()
 {

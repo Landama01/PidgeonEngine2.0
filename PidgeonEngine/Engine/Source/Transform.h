@@ -19,7 +19,7 @@ public:
 	void SetTransformMatrix(float3 position, Quat rotation, float3 localScale, Transform* parent);
 	float* GetGlobalTransformT() { return globalTransformTransposed.ptr(); };
 
-private:
+public:
 	void UpdateTransform();
 	Transform* GetRecursiveTransforms(Transform* node, std::vector<Transform*>& transforms);
 

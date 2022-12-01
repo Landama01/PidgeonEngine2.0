@@ -29,7 +29,7 @@
 
 void ModelImporter::Import(const char* fullPath, char* buffer, int bSize, GameObject* objRoot)
 {
-	const aiScene* scene = aiImportFileFromMemory(buffer, bSize, aiProcessPreset_TargetRealtime_MaxQuality, nullptr);
+	const aiScene* scene = aiImportFileFromMemory(buffer, bSize, aiProcessPreset_TargetRealtime_MaxQuality, NULL);
 
 	std::string fileName = StringLogic::FileNameFromPath(fullPath);
 
@@ -38,45 +38,46 @@ void ModelImporter::Import(const char* fullPath, char* buffer, int bSize, GameOb
 		std::vector<Mesh*> sceneMeshes;
 		std::vector<Texture*> testTextures;
 
-		//This should not be here
-		if (scene->HasMaterials())
+		for (size_t i = 0; i < scene->mNumMeshes; i++)
 		{
-			//Needs to be moved to another place
-			std::string generalPath(fullPath);
-			generalPath = generalPath.substr(0, generalPath.find_last_of("/\\") + 1);
-			for (size_t k = 0; k < scene->mNumMaterials; k++)
+			if (scene->HasMaterials())
 			{
-				aiMaterial* material = scene->mMaterials[k];
-				uint numTextures = material->GetTextureCount(aiTextureType_DIFFUSE);
-
-				if (numTextures > 0)
+				std::string generalPath(fullPath);
+				generalPath = generalPath.substr(0, generalPath.find_last_of("/\\") + 1);
+				for (size_t k = 0; k < scene->mNumMaterials; k++)
 				{
-					aiString path;
-					material->GetTexture(aiTextureType_DIFFUSE, 0, &path);
+					aiMaterial* material = scene->mMaterials[k];
+					uint numTextures = material->GetTextureCount(aiTextureType_DIFFUSE);
 
-					std::string localPath = StringLogic::GlobalToLocalPath(fullPath);
-					localPath = localPath.substr(0, localPath.find_last_of('/') + 1);
-					localPath += FileSystem::NormalizePath(path.C_Str());
-
-					char* buffer = nullptr;
-					int size = FileSystem::LoadToBuffer(localPath.c_str(), &buffer);
-
-					if (buffer != nullptr)
+					if (numTextures > 0)
 					{
-						int w = 0;
-						int h = 0;
+						aiString path;
+						material->GetTexture(aiTextureType_DIFFUSE, 0, &path);
 
-						GLuint id = TextureLoader::LoadToMemory(buffer, size, &w, &h);
-						Texture* Test = new Texture(id, w, h);
-						testTextures.push_back(Test);
+						std::string localPath = StringLogic::GlobalToLocalPath(fullPath);
+						localPath = localPath.substr(0, localPath.find_last_of('/') + 1);
+						localPath += FileSystem::NormalizePath(path.C_Str());
 
-						RELEASE_ARRAY(buffer)
+						char* buffer = nullptr;
+						int size = FileSystem::LoadToBuffer(localPath.c_str(), &buffer);
+
+						if (buffer != nullptr)
+						{
+							int w = 0;
+							int h = 0;
+
+							GLuint id = TextureLoader::LoadToMemory(buffer, size, &w, &h);
+							Texture* Test = new Texture(id, w, h);
+							testTextures.push_back(Test);
+
+							RELEASE_ARRAY(buffer)
+						}
+
+						path.Clear();
 					}
-
-					path.Clear();
 				}
 			}
-		}
+		}		
 
 		//Load all meshes into mesh vector
 		for (unsigned int i = 0; i < scene->mNumMeshes; i++)

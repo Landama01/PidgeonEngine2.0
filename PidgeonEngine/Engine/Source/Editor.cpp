@@ -14,6 +14,9 @@
 #include "GameTab.h"
 #include "Hierarchy.h"
 
+//Componenet
+#include "GO_Camera.h"
+
 #include "Primitive.h"
 
 Editor::Editor(Application* app, bool start_enabled): Module(app, start_enabled)
@@ -32,6 +35,8 @@ Editor::Editor(Application* app, bool start_enabled): Module(app, start_enabled)
 	tabs[static_cast<unsigned int>(TabType::SCENE)] = new SceneTab();
 	tabs[static_cast<unsigned int>(TabType::GAME)] = new GameTab();
 	tabs[static_cast<unsigned int>(TabType::HIERARCHY)] = new Hierarchy(app->scene);
+
+	GO_camera = nullptr;
 
 	// Assign a shortcut to each tab
 	for (int i = 0; i < tabs.size(); i++)
@@ -78,6 +83,9 @@ bool Editor::Init()
 
 bool Editor::Start()
 {
+	GameObject* newGameObject = App->scene->CreateGameObject("MainCamera", app->scene->root);
+	GO_camera = new GO_Camera(newGameObject);
+
     return true;
 }
 void Editor::LogToConsole(const char* msg, LogType _type)

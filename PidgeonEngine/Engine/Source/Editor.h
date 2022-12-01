@@ -9,6 +9,7 @@
 
 class Tab;
 class GameObject;
+class GO_Camera;
 
 #define FPS_MS_LOG_MAXLENGHT 100
 
@@ -47,6 +48,8 @@ public:
 	void CreateDockSpace();
 	ImGuiID DockSpaceOverViewportCustom(ImGuiViewport* viewport, ImGuiDockNodeFlags dockspaceFlags, ImVec2 position, ImVec2 size, const ImGuiWindowClass* windowClass);
 
+	GO_Camera* GO_camera;
+
 private:
 	std::vector<Tab*> tabs;
 
@@ -55,7 +58,7 @@ private:
 	std::vector<float> fpsLog;
 	std::vector<float> msLog;
 
-	bool showCase = false;
+	bool showCase = false;	
 
 	// DockingSpace
 	ImGuiID dockId = 0;

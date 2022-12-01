@@ -29,13 +29,10 @@ public:
 	void SetAssetsPath(const char*);
 	void SetLibraryPath(const char*);
 
-	//inline bool IsLoadedToMemory() const { return (referenceCount >= 0) ? true : false; }
-
 	inline unsigned int GetReferenceCount() const { return referenceCount; }
 	inline void IncreaseReferenceCount() { referenceCount++; }
 	inline void DecreaseReferenceCount() { referenceCount--; }
 
-	//Can't be pure virtual "=0" until there is a resoruce model class
 	virtual bool LoadToMemory() { return false; }
 	virtual bool UnloadFromMemory() { return false; }
 

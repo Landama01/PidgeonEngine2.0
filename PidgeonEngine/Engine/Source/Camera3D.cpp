@@ -5,7 +5,9 @@
 #include "Editor.h"
 #include "GameObject.h"
 #include "Transform.h"
-
+#include "GO_Camera.h"
+#include "MeshRenderer.h"
+#include "Editor.h"
 
 #include "Math/float4x4.h"
 #include "Math/float3.h"
@@ -43,7 +45,7 @@ bool Camera3D::CleanUp()
 
 update_status Camera3D::Update(float dt)
 {
-
+	App->editor->GO_camera->DrawCameraBounds();
 	return UPDATE_CONTINUE;
 }
 
@@ -72,7 +74,7 @@ void Camera3D::CheckInputs()
 	Reference += newPos;
 
 	// Mouse motion ----------------
-	OrbitRotation();
+	//OrbitRotation();
 
 	// Recalculate matrix -------------
 	CalculateViewMatrix();
@@ -158,8 +160,68 @@ void Camera3D::MousePicking()
 	normalizedMousePos.x = -1.0 + 2.0 * ((MousePos.x - WindowPos.x) / ((WindowPos.x + WindowSize.x) - WindowPos.x));
 	normalizedMousePos.y = 1.0 - 2.0 * ((MousePos.y - (WindowPos.y + frameHeight)) / (((WindowPos.y + frameHeight) + (WindowSize.y - frameHeight)) - (WindowPos.y + frameHeight)));
 
-	LineSegment picking = cameraFrustum.UnProjectLineSegment(normalizedMousePos.x, normalizedMousePos.y);
+	if (normalizedMousePos.x <= 1 && normalizedMousePos.x >= -1)
+	{
+		if (normalizedMousePos.y <= 1 && normalizedMousePos.y >= -1)
+		{
+			LineSegment picking = cameraFrustum.UnProjectLineSegment(normalizedMousePos.x, normalizedMousePos.y);
+			
+			std::map<float, GameObject*> selected;
+			float nearGO, farGO;
+			for (std::vector<GameObject*>::iterator i = App->scene->root->childrens.begin(); i < App->scene->root->childrens.end(); i++)
+			{
+				if (picking.Intersects((*i)->globalAABB, nearGO, farGO))
+				{
+					selected[nearGO] = (*i);
+				}
+			}
 
+			std::map<float, GameObject*> distance;
+			for (auto i = selected.begin(); i != selected.end(); i++)
+			{
+				Mesh* mesh = (*i).second->GetComponent<Mesh>();
+				if (mesh)
+				{
+					picking.Transform((*i).second->transform->globalTransform.Inverted());
+
+					if (mesh->num_vertex >= 9)
+					{
+						for (int j = 0; j < mesh->num_indices; j += 3)
+						{
+							float3 A = mesh->GetVectorFromIndex(&mesh->vertex[mesh->index[j]]);
+							float3 B = mesh->GetVectorFromIndex(&mesh->vertex[mesh->index[j + 1]]);
+							float3 C = mesh->GetVectorFromIndex(&mesh->vertex[mesh->index[j + 2]]);
+
+							Triangle triangle(A, B, C);
+							float distanceV = 0;
+							if (picking.Intersects(triangle, &distanceV, nullptr))
+							{
+								distance[distanceV] = (*i).second;
+							}
+						}
+					}
+				}
+			}
+			selected.clear();
+
+			bool alreadySelect = false;
+
+			GameObject* temp = App->editor->GetGameObjectSelected();
+
+			if (distance.begin() != distance.end())
+			{				
+				temp = (*distance.begin()).second;
+				alreadySelect = true;
+			}
+
+			distance.clear();
+
+			if (!alreadySelect)
+			{
+				temp = nullptr;
+			}
+		}
+	}
 }
 
 // -----------------------------------------------------------------

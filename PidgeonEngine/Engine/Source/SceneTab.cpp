@@ -25,6 +25,7 @@ void SceneTab::Draw()
 		if (ImGui::IsWindowHovered())
 		{
 			app->camera->CheckInputs();
+			app->camera->MousePicking();
 		}
 
 		// Calculate size of tab scene, get window width and hight and transform the viewport to image and render it 
