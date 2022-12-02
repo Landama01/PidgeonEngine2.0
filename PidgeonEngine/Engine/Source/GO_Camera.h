@@ -15,15 +15,20 @@ public:
 	void DrawCamera();
 	void DrawCameraBounds();
 
-private:
-
 	void CalculateViewMatrix();
+	void RecalculateProjection();
+
+	void OnGui();
 
 	bool SaveConfig(JsonParser& node) const;
 
 	bool LoadConfig(JsonParser& node);
 
 public:
+	float aspectRatio = 1.f;
+	float verticalFOV = 100.f;
+	float nearPlaneDistance = 0.1f;
+	float farPlaneDistance = 250.f;
 
 	float3 X, Y, Z, Position, Reference;
 

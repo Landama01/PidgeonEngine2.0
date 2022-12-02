@@ -33,7 +33,8 @@ Scene::~Scene()
 bool Scene::Init()
 {
 	LOG(LogType::L_NORMAL, "Loading Scene");
-	root = CreateGameObject("Root", nullptr);
+
+	root = new GameObject("Root");
 
 	return true;
 }
@@ -75,26 +76,6 @@ update_status Scene::Update(float dt)
 
 	UpdateGameObjects();
 
-	/*if (App->editor->GO_camera != nullptr)
-	{
-		App->editor->GO_camera->DrawCamera();
-		std::queue<GameObject*> q;
-		for (GameObject* child : root->childrens)
-		{
-			q.push(child);
-		}
-		while (!q.empty())
-		{
-			GameObject* go = q.front();
-			go->Update();
-			q.pop();
-			for (GameObject* child : go->childrens)
-			{
-				q.push(child);
-			}
-		}
-	}*/
-
 	return update_status::UPDATE_CONTINUE;
 }
 
@@ -107,11 +88,20 @@ bool Scene::CleanUp()
 	return true;
 }
 
-GameObject* Scene::CreateGameObject(const char* name, GameObject* parent)
+GameObject* Scene::CreateGameObject(const char* name)
 {
 	GameObject* obj = new GameObject(name);
+		
+	root->AddChildren(obj);
 
-	if (parent != nullptr)
+	return obj;
+}
+
+GameObject* Scene::CreateChildrenGameObject(const char* name, GameObject* parent)
+{
+	GameObject* obj = new GameObject(name);
+	
+	if(parent != nullptr)
 		parent->AddChildren(obj);
 
 	return obj;

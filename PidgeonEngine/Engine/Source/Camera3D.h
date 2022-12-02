@@ -22,6 +22,7 @@ public:
 	void LookAt(const vec3 &Spot);
 	void Move(const vec3 &Movement);
 	float* GetViewMatrix();
+	void RecalculateProjection();
 	void OrbitRotation();
 
 	void FrontView();
@@ -37,7 +38,11 @@ private:
 	bool LoadConfig(JsonParser& node);
 
 public:
-	
+	float aspectRatio = 1.f;
+	float verticalFOV = 100.f;
+	float nearPlaneDistance = 0.1f;
+	float farPlaneDistance = 1000.f;
+
 	vec3 X, Y, Z, Position, Reference;
 
 	Frustum cameraFrustum;

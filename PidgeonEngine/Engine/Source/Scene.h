@@ -20,7 +20,8 @@ public:
 
 	bool CleanUp() override;
 
-	GameObject* CreateGameObject(const char* name, GameObject* parent);
+	GameObject* CreateGameObject(const char* name);
+	GameObject* CreateChildrenGameObject(const char* name, GameObject* parent);
 	GameObject* CreatePrimitive(const char* name, Mesh* mesh);
 
 	GameObject* root;

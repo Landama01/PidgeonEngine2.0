@@ -6,31 +6,19 @@
 #include "Glew/include/glew.h"
 #include "SDL/include/SDL_opengl.h"
 
-bool Rect::Contains(Rect b)
+
+Texture::Texture(std::string path, std::string name) : Resource (textureID, ResourceType::TEXTURE), path(path), name(name)
 {
-	if ((b.x + b.w) <= (x + w)
-		&& (b.x) >= (x)
-		&& (b.y) >= (y)
-		&& (b.y + b.h) <= (y + h)
-		)
+	SetAssetsPath(path.c_str());
+	std::string libPath;
+	if (path.find("/") != std::string::npos)
 	{
-		return true;
+		int pos = path.find_last_of("/");
+		libPath = "Library/Textures" + path.substr(pos, path.find_last_of(".") - pos) + ".dds";
 	}
 	else
-	{
-		return false;
-	}
-}
-
-Texture::Texture(unsigned int textureID) : Resource(textureID, ResourceType::TEXTURE), texWidth(0), texHeight(0)
-{
-	color = White;
-}
-
-Texture::Texture(GLuint textureID, int texWidth, int texHeight, const char* name, const char* path) :
-	Resource(textureID, ResourceType::TEXTURE),
-	textureID(textureID), texWidth(texWidth), texHeight(texHeight), name(name), path(path)
-{
+		libPath = "Library/Textures/" + path.substr(0, path.find_last_of(".")) + ".dds";
+	SetLibraryPath(libPath.c_str());
 }
 
 Texture::~Texture()
@@ -63,22 +51,8 @@ bool Texture::UnloadFromMemory()
 	return true;
 }
 
-Rect Texture::GetTextureChunk(Rect area)
+void Texture::import(char* buffer, int size, const char* name)
 {
-	//Rect of the chunk we need to get
-	Rect ret;
-	if (!Rect(0, 0, this->texWidth, this->texHeight).Contains(area))
-		return ret;
-
-	//Calculate rect as normalized rect
-	ret = area;
-
-	ret.x = ret.x / texWidth;
-	ret.w = (ret.x + ret.w) / texWidth;
-
-	ret.y = ret.y / texHeight;
-	ret.h = (ret.y + ret.h) / texHeight;
-
-	//Position should be inside the 0, 1 range and position + width (normalized) should not be more than 1
-	return ret;
+	bool dds = TextureLoader::SaveDDS(buffer, size, name);
+	if (dds) path = name;
 }

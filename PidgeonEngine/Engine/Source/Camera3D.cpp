@@ -74,7 +74,7 @@ void Camera3D::CheckInputs()
 	Reference += newPos;
 
 	// Mouse motion ----------------
-	//OrbitRotation();
+	OrbitRotation();
 
 	// Recalculate matrix -------------
 	CalculateViewMatrix();
@@ -310,6 +310,15 @@ bool Camera3D::SaveConfig(JsonParser& node) const
 	node.SetNewJsonNumber(node.ValueToObject(node.GetRootValue()), "Position.z", Position.z);
 
 	return true;
+}
+
+void Camera3D::RecalculateProjection()
+{
+	cameraFrustum.type = FrustumType::PerspectiveFrustum;
+	cameraFrustum.nearPlaneDistance = nearPlaneDistance;
+	cameraFrustum.farPlaneDistance = farPlaneDistance;
+	cameraFrustum.verticalFov = (verticalFOV * 3.141592 / 2) / 180.f;
+	cameraFrustum.horizontalFov = 2.f * atanf(tanf(cameraFrustum.verticalFov * 0.5f) * aspectRatio);
 }
 
 bool Camera3D::LoadConfig(JsonParser& node)

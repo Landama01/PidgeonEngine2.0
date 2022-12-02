@@ -33,22 +33,16 @@ bool ResourceManager::Init()
 }
 
 bool ResourceManager::Start()
-{
-	// Import Icon
-	int w = 0; int h = 0;
-	char* buffer = nullptr;
-	uint size = FileSystem::LoadToBuffer("logo.png", &buffer);
+{	
+	logo = new Texture("logo.png", "logo");
+	logo->LoadToMemory();
 
-	GLuint id = TextureLoader::LoadToMemory(buffer, size, &w, &h);
-	logo = new Texture(id, w, h);
-	app->renderer3D->globalTextures.push_back(logo);
-
-	RELEASE_ARRAY(buffer);
 	return true;
 }
 
 bool ResourceManager::CleanUp()
 {
+	RELEASE(logo);
 	FileSystem::FSDeInit();
 	return true;
 }
@@ -56,25 +50,11 @@ bool ResourceManager::CleanUp()
 void ResourceManager::ImportFile(const char* assetsFile)
 {
 	std::string normalizedPath = FileSystem::NormalizePath(assetsFile);
-	std::string relativePath = StringLogic::GlobalToLocalPath(assetsFile);
 
-	//Duplicate file
-	//BUG: This will only allow to work with files inside PhysFS dir
 	std::string output = "";
 
-	std::string fileName = StringLogic::GlobalToLocalPath(normalizedPath.c_str());
-	if (fileName.length() == 0) {
-		fileName = normalizedPath;
-	}
-
-	if (PHYSFS_exists(fileName.c_str()) == 0)
-	{
-		FileSystem::Copy(assetsFile, ASSETS_FOLDER, output);
-		fileName = output;
-	}
-
 	char* buffer = nullptr;
-	uint size = FileSystem::LoadToBuffer(fileName.c_str(), &buffer);
+	uint size = FileSystem::LoadToBuffer(normalizedPath.c_str(), &buffer);
 
 	if (buffer != nullptr && size != 0)
 	{
@@ -91,21 +71,21 @@ void ResourceManager::ImportFile(const char* assetsFile)
 			break;
 		}
 		case ImportType::TEXTURE:
-		{
-			int w = 0; int h = 0;
-			GLuint id = TextureLoader::LoadToMemory(buffer, size, &w, &h);
-			Texture* material = new Texture(id, w, h);
-			app->renderer3D->globalTextures.push_back(material);
+		{			
+			Texture* material = new Texture(normalizedPath.c_str());
 
-			Inspector* inspector = dynamic_cast<Inspector*>(app->editor->GetTab(TabType::INSPECTOR));
+			material->import(buffer, size, material->GetLibraryPath());
+			material->LoadToMemory();
+
+			Inspector* inspector = static_cast<Inspector*>(app->editor->GetTab(TabType::INSPECTOR));
 			if (inspector && inspector->gameObjectSelected) {
-				Material* mat = dynamic_cast<Material*>(inspector->gameObjectSelected->GetComponent(ComponentType::MATERIAL));
+				Material* mat = static_cast<Material*>(inspector->gameObjectSelected->GetComponent(ComponentType::MATERIAL));
 				if (mat)
 				{
 					mat->matTexture = material;
 				}
 				else {
-					Material* mat = dynamic_cast<Material*>(inspector->gameObjectSelected->AddComponent(ComponentType::MATERIAL));
+					Material* mat = static_cast<Material*>(inspector->gameObjectSelected->AddComponent(ComponentType::MATERIAL));
 					mat->matTexture = material;
 				}
 			}

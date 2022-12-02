@@ -27,7 +27,6 @@ void MeshLoader::EnableDebugMode()
 }
 void MeshLoader::DisableDebugMode()
 {
-	// Detach log stream
 	aiDetachAllLogStreams();
 }
 
@@ -67,12 +66,10 @@ Mesh* MeshLoader::LoadMesh(aiMesh* importedMesh, uint oldUID)
 			mesh->texcoords.push_back(importedMesh->mTextureCoords[0][i].x);
 			mesh->texcoords.push_back(importedMesh->mTextureCoords[0][i].y);
 		}
+		else mesh->num_texcoords = 0;
 	}
 
-	if (importedMesh->HasVertexColors(0))
-	{
-		LOG(LogType::L_ERROR, "ADD VERTEX COLORS");
-	}
+	importedMesh->HasVertexColors(0);
 
 	if (importedMesh->HasFaces())
 	{
@@ -93,6 +90,7 @@ Mesh* MeshLoader::LoadMesh(aiMesh* importedMesh, uint oldUID)
 	}
 
 	mesh->LoadToMemory();
+	mesh->SetBounds();
 
 	LOG(LogType::L_NORMAL, "New mesh with %d vertices", mesh->num_vertex);
 	LOG(LogType::L_NORMAL, "New mesh with %d normals", mesh->num_normals);

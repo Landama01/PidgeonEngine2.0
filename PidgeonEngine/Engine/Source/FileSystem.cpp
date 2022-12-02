@@ -9,8 +9,6 @@
 // File System Init
 void FileSystem::FSInit()
 {
-	// In future this should be move to ResourceManager (the CleanUp, also)
-	// Devil init
 	LOG(LogType::L_NORMAL, "DevIL Init");
 	ilInit();
 	iluInit();
@@ -18,33 +16,32 @@ void FileSystem::FSInit()
 	ilutRenderer(ILUT_OPENGL);
 	MeshLoader::EnableDebugMode();
 
-	// PHYSFS_init
-	// Needs to be created before Init so other modules can use it
 	char* base_path = SDL_GetBasePath();
 	PHYSFS_init(base_path);
 	SDL_free(base_path);
 
-	//Setting the working directory as the writing directory
-	if (PHYSFS_setWriteDir(".") == 0)
+	if (PHYSFS_setWriteDir(base_path) == 0)
 		LOG(LogType::L_NORMAL, "File System error while creating write dir: %s\n", PHYSFS_getLastError());
 
-	// Adding ProjectFolder (working directory)
-	FileSystem::AddPath(".");
-	// Adding AssestsFolder
 	std::string assetPath = GetBasePath();
-	assetPath += ASSETS_FOLDER;
+	std::string path = NormalizePath(assetPath.c_str());
+	FileSystem::AddPath(assetPath.c_str());
+
+	assetPath = GetBasePath();
+	assetPath = NormalizePath(assetPath.c_str());
+	assetPath += ASSETS_FOLDER;	
+	FileSystem::AddPath(assetPath.c_str());
+
+	assetPath = GetBasePath();
 	assetPath = NormalizePath(assetPath.c_str());
 	FileSystem::AddPath(assetPath.c_str());
 
-	// Dump list of paths
 	LOG(LogType::L_NORMAL, "FileSystem Operations base is [%s] plus:", GetBasePath());
 	LOG(LogType::L_NORMAL, GetReadPaths());
 
 	FileSystem::CreateLibraryDirectories();
 }
 
-
-// Extract file name, from last "/" until the "."
 std::string StringLogic::FileNameFromPath(const char* _path)
 {
 	std::string fileName(_path);
@@ -54,7 +51,7 @@ std::string StringLogic::FileNameFromPath(const char* _path)
 
 	return fileName;
 }
-// Convert global path to local path, example:
+
 std::string StringLogic::GlobalToLocalPath(const char* _globalPath)
 {
 	std::string localPath = FileSystem::NormalizePath(_globalPath);
@@ -71,7 +68,7 @@ std::string StringLogic::GlobalToLocalPath(const char* _globalPath)
 	localPath.clear();
 	return localPath;
 }
-// Get file type from path according to its extension 
+
 ImportType FileSystem::GetTypeFromPath(const char* path)
 {
 	std::string ext(path);
@@ -90,19 +87,12 @@ ImportType FileSystem::GetTypeFromPath(const char* path)
 	return ImportType::NOTYPE;
 }
 
-int close_sdl_rwops(SDL_RWops* rw)
-{
-	RELEASE_ARRAY(rw->hidden.mem.base);
-	SDL_FreeRW(rw);
-	return 0;
-}
-
 void FileSystem::FSDeInit()
 {
 	PHYSFS_deinit();
 	MeshLoader::DisableDebugMode();
 }
-// If don't exist this paths, let's create 
+
 void FileSystem::CreateLibraryDirectories()
 {
 	CreateDir(LIBRARY_FOLDER);
@@ -119,13 +109,13 @@ bool FileSystem::CreateDir(const char* dir)
 	}
 	return true;
 }
-// Check if a file exists
+
 bool FileSystem::Exists(const char* file)
 {
 	return PHYSFS_exists(file) != 0;
 }
 
-// Add a new zip file or folder
+
 bool FileSystem::AddPath(const char* path_or_zip)
 {
 	bool ret = false;
@@ -139,7 +129,7 @@ bool FileSystem::AddPath(const char* path_or_zip)
 
 	return ret;
 }
-// Return all existing paths
+
 const char* FileSystem::GetReadPaths()
 {
 	static char paths[512];
@@ -155,12 +145,12 @@ const char* FileSystem::GetReadPaths()
 
 	return paths;
 }
-// Check if a file is a directory
+
 bool FileSystem::IsDirectory(const char* file)
 {
 	return PHYSFS_isDirectory(file) != 0;
 }
-// Substitute "\\" to "/"
+
 std::string FileSystem::NormalizePath(const char* full_path)
 {
 	std::string newPath(full_path);
@@ -181,49 +171,7 @@ std::string FileSystem::UnNormalizePath(const char* full_path)
 	}
 	return newPath;
 }
-// Split file path
-void FileSystem::SplitFilePath(const char* full_path, std::string* path, std::string* file, std::string* extension)
-{
-	if (full_path != nullptr)
-	{
-		std::string full(full_path);
-		size_t pos_separator = full.find_last_of("\\/");
-		size_t pos_dot = full.find_last_of(".");
 
-		if (path != nullptr)
-		{
-			if (pos_separator < full.length())
-				*path = full.substr(0, pos_separator + 1);
-			else
-				path->clear();
-		}
-
-		if (file != nullptr)
-		{
-			if (pos_separator < full.length())
-				*file = full.substr(pos_separator + 1, pos_dot - pos_separator - 1);
-			else
-				*file = full.substr(0, pos_dot);
-		}
-
-		if (extension != nullptr)
-		{
-			if (pos_dot < full.length())
-				*extension = full.substr(pos_dot + 1);
-			else
-				extension->clear();
-		}
-	}
-}
-
-unsigned int FileSystem::Load(const char* path, const char* file, char** buffer)
-{
-	std::string full_path(path);
-	full_path += file;
-	return LoadToBuffer(full_path.c_str(), buffer);
-}
-
-// Read a whole file and put it in a new buffer
 uint FileSystem::LoadToBuffer(const char* file, char** buffer)
 {
 	uint ret = 0;
@@ -246,7 +194,6 @@ uint FileSystem::LoadToBuffer(const char* file, char** buffer)
 			else
 			{
 				ret = readed;
-				//Adding end of file at the end of the buffer. Loading a shader file does not add this for some reason
 				(*buffer)[size] = '\0';
 			}
 		}
@@ -258,51 +205,6 @@ uint FileSystem::LoadToBuffer(const char* file, char** buffer)
 		LOG(LogType::L_ERROR, "File System error while opening file %s: %s\n", file, PHYSFS_getLastError());
 
 	return ret;
-}
-
-// Duplicate a file to a local PhysFS valid path
-unsigned int FileSystem::Copy(const char* file, const char* dir, std::string& outputFile)
-{
-	uint size = 0;
-
-	if (file == nullptr || dir == nullptr)
-		return size;
-
-	std::FILE* filehandle;
-	fopen_s(&filehandle, file, "rb");
-
-	if (filehandle != nullptr)
-	{
-		fseek(filehandle, 0, SEEK_END);
-		size = ftell(filehandle);
-		rewind(filehandle);
-
-		char* buffer = new char[size];
-		size = fread(buffer, 1, size, filehandle);
-		if (size > 0)
-		{
-			GetFileName(file, outputFile, true);
-			outputFile.insert(0, "/");
-			outputFile.insert(0, dir);
-
-			size = Save(outputFile.data(), buffer, size, false);
-			if (size > 0)
-			{
-				LOG(LogType::L_NORMAL, "FILE SYSTEM: Successfully copied file '%s' in dir '%s'", file, dir);
-			}
-			else
-				LOG(LogType::L_ERROR, "FILE SYSTEM: Could not copy file '%s' in dir '%s'", file, dir);
-		}
-		else
-			LOG(LogType::L_ERROR, "FILE SYSTEM: Could not read from file '%s'", file);
-
-		RELEASE_ARRAY(buffer);
-		fclose(filehandle);
-	}
-	else
-		LOG(LogType::L_ERROR, "FILE SYSTEM: Could not open file '%s' to read", file);
-
-	return size;
 }
 
 unsigned int FileSystem::Save(const char* file, char* buffer, unsigned int size, bool append)

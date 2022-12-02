@@ -38,6 +38,11 @@ void ModelImporter::Import(const char* fullPath, char* buffer, int bSize, GameOb
 		std::vector<Mesh*> sceneMeshes;
 		std::vector<Texture*> testTextures;
 
+		for (unsigned int i = 0; i < scene->mNumMeshes; i++)
+		{
+			sceneMeshes.push_back(MeshLoader::LoadMesh(scene->mMeshes[i]));
+		}
+
 		for (size_t i = 0; i < scene->mNumMeshes; i++)
 		{
 			if (scene->HasMaterials())
@@ -54,20 +59,23 @@ void ModelImporter::Import(const char* fullPath, char* buffer, int bSize, GameOb
 						aiString path;
 						material->GetTexture(aiTextureType_DIFFUSE, 0, &path);
 
-						std::string localPath = StringLogic::GlobalToLocalPath(fullPath);
+						std::string localPath(fullPath);
 						localPath = localPath.substr(0, localPath.find_last_of('/') + 1);
-						localPath += FileSystem::NormalizePath(path.C_Str());
+
+						std::string fileNamePath = FileSystem::NormalizePath(path.C_Str());
+						fileNamePath = fileNamePath.substr(fileNamePath.find_last_of("/\\") + 1);
+
+						localPath += fileNamePath;
 
 						char* buffer = nullptr;
 						int size = FileSystem::LoadToBuffer(localPath.c_str(), &buffer);
 
 						if (buffer != nullptr)
-						{
-							int w = 0;
-							int h = 0;
+						{					
 
-							GLuint id = TextureLoader::LoadToMemory(buffer, size, &w, &h);
-							Texture* Test = new Texture(id, w, h);
+							
+							Texture* Test = new Texture(localPath.c_str());
+							Test->LoadToMemory();
 							testTextures.push_back(Test);
 
 							RELEASE_ARRAY(buffer)
@@ -78,29 +86,13 @@ void ModelImporter::Import(const char* fullPath, char* buffer, int bSize, GameOb
 				}
 			}
 		}		
-
-		//Load all meshes into mesh vector
-		for (unsigned int i = 0; i < scene->mNumMeshes; i++)
-		{
-			sceneMeshes.push_back(MeshLoader::LoadMesh(scene->mMeshes[i]));
-		}
+				
 
 		LOG(LogType::L_NORMAL, "-- Loading FBX as GameObject --");
 		NodeToGameObject(scene->mMeshes, testTextures, sceneMeshes, scene->mRootNode, objRoot, fileName.c_str());
 
-		//Only for memory cleanup, needs an update ASAP
-		for (unsigned int i = 0; i < sceneMeshes.size(); i++)
-		{
-			app->renderer3D->globalMeshes.push_back(sceneMeshes[i]);
-		}
-		for (unsigned int i = 0; i < testTextures.size(); i++)
-		{
-			app->renderer3D->globalTextures.push_back(testTextures[i]);
-		}
-
 		sceneMeshes.clear();
 		testTextures.clear();
-
 		aiReleaseImport(scene);
 	}
 	else
@@ -148,8 +140,6 @@ void ModelImporter::NodeToGameObject(aiMesh** meshArray, std::vector<Texture*>& 
 			PopulateTransform(rootGO, node);
 			objParent->AddChildren(rootGO);
 		}
-
-
 		for (unsigned int i = 0; i < node->mNumChildren; i++)
 		{
 			NodeToGameObject(meshArray, sceneTextures, sceneMeshes, node->mChildren[i], rootGO, node->mChildren[i]->mName.C_Str());

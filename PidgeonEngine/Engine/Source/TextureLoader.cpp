@@ -43,7 +43,7 @@ GLuint TextureLoader::LoadToMemory(char* buffer, int size, int* w, int* h)
 	return glID;
 }
 
-void TextureLoader::SaveDDS(char* buffer, int size, const char* fileName)
+bool TextureLoader::SaveDDS(char* buffer, int size, const char* fileName)
 {
 	ILuint imageID;
 	ilGenImages(1, &imageID);
@@ -52,9 +52,10 @@ void TextureLoader::SaveDDS(char* buffer, int size, const char* fileName)
 	if (!ilLoadL(IL_TYPE_UNKNOWN, buffer, size))
 	{
 		LOG(LogType::L_ERROR, "Image not loaded");
+		ilDeleteImages(1, &imageID);
+		return false;
 	}
 
-	//TODO: Move this to function
 	ILuint _size = 0;
 	ILubyte* data = nullptr;
 	ilSetInteger(IL_DXTC_FORMAT, IL_DXT5);
@@ -62,21 +63,15 @@ void TextureLoader::SaveDDS(char* buffer, int size, const char* fileName)
 	if (_size > 0)
 	{
 		data = new ILubyte[_size];
-		ilSaveL(IL_DDS, data, _size);
+		if (ilSaveL(IL_DDS, data, _size))
+			buffer = (char*)data;
 
-		std::string path(fileName);
-		//path += ".dds";
-
-		FileSystem::Save(path.c_str(), (char*)data, _size, false);
+		FileSystem::Save(fileName, buffer, _size, false);
 
 		delete[] data;
 		data = nullptr;
 	}
 
 	ilDeleteImages(1, &imageID);
-}
-
-void TextureLoader::Import(char* buffer, int bSize, Resource* res)
-{
-	SaveDDS(buffer, bSize, res->GetLibraryPath());
+	return true;
 }

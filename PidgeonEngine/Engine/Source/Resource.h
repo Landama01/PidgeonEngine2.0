@@ -36,7 +36,7 @@ public:
 	virtual bool LoadToMemory() { return false; }
 	virtual bool UnloadFromMemory() { return false; }
 
-public:
+private:
 
 	int uid;
 	std::string assetsFile;

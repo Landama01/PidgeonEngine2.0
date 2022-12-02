@@ -18,10 +18,12 @@ public:
 	bool UnloadFromMemory() override;
 
 	void SetBounds();
+
 	void RenderMesh(GLuint textureID = -1);
 	void RenderMeshDebug(bool* vertexNormals, bool* faceNormals);
 	float3 GetVectorFromIndex(float* startValue);
 
+	void CleanUp();
 public:
 	// Buffers ID
 	uint id_index = 0;
@@ -40,7 +42,7 @@ public:
 	std::vector<float> normals;
 
 private:
-	float3 center = { 0,0,0 };
+	float3 center = float3::zero;
 	float radius;
 
 	AABB localAABB;

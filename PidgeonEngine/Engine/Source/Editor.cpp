@@ -83,7 +83,7 @@ bool Editor::Init()
 
 bool Editor::Start()
 {
-	GameObject* newGameObject = App->scene->CreateGameObject("MainCamera", app->scene->root);
+	GameObject* newGameObject = App->scene->CreateGameObject("MainCamera");
 	GO_camera = new GO_Camera(newGameObject);
 
     return true;
@@ -195,6 +195,7 @@ update_status Editor::ImGuiMenuBar()
 				PrimitiveCube cubePrim = PrimitiveCube();
 				cubePrim.InnerMesh();
 				cubePrim.mesh->LoadToMemory();
+				cubePrim.mesh->SetBounds();
 
 				app->scene->CreatePrimitive("Cube", cubePrim.mesh);
 			}
@@ -203,6 +204,7 @@ update_status Editor::ImGuiMenuBar()
 				PrimitiveSphere spherePrim = PrimitiveSphere();
 				spherePrim.InnerMesh();
 				spherePrim.mesh->LoadToMemory();
+				spherePrim.mesh->SetBounds();
 
 				app->scene->CreatePrimitive("Sphere", spherePrim.mesh);
 			}
@@ -211,6 +213,7 @@ update_status Editor::ImGuiMenuBar()
 				PrimitiveCylinder cylinderPrim = PrimitiveCylinder();
 				cylinderPrim.InnerMesh();
 				cylinderPrim.mesh->LoadToMemory();
+				cylinderPrim.mesh->SetBounds();
 
 				app->scene->CreatePrimitive("Cylinder", cylinderPrim.mesh);
 			}
@@ -219,6 +222,7 @@ update_status Editor::ImGuiMenuBar()
 				PrimitivePyramid pyramidPrim = PrimitivePyramid();
 				pyramidPrim.InnerMesh();
 				pyramidPrim.mesh->LoadToMemory();
+				pyramidPrim.mesh->SetBounds();
 
 				app->scene->CreatePrimitive("Pyramid", pyramidPrim.mesh);
 			}

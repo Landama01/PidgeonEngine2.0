@@ -10,7 +10,7 @@
 
 #include "ImGui/imgui.h"
 
-GO_Camera::GO_Camera(GameObject* obj) : Component(obj)
+GO_Camera::GO_Camera(GameObject* obj) : Component(nullptr)
 {
 	CalculateViewMatrix();
 
@@ -32,7 +32,8 @@ GO_Camera::GO_Camera(GameObject* obj) : Component(obj)
 }
 
 GO_Camera::~GO_Camera()
-{}
+{
+}
 
 void GO_Camera::LookAt(const float3& Spot)
 {
@@ -55,11 +56,40 @@ void GO_Camera::CalculateViewMatrix()
 	ViewMatrix = cameraFrustum.ViewMatrix();
 }
 
+void GO_Camera::RecalculateProjection()
+{ 
+	cameraFrustum.type = FrustumType::PerspectiveFrustum;
+	cameraFrustum.nearPlaneDistance = nearPlaneDistance;
+	cameraFrustum.farPlaneDistance = farPlaneDistance;
+	cameraFrustum.verticalFov = (verticalFOV * 3.141592 / 2) / 180.f;
+	cameraFrustum.horizontalFov = 2.f * atanf(tanf(cameraFrustum.verticalFov * 0.5f) * aspectRatio);
+}
+
+void GO_Camera::OnGui()
+{
+	if (ImGui::CollapsingHeader("Camera Editor"))
+	{
+		if (ImGui::DragFloat("Vertical FOV", &verticalFOV))
+		{
+			RecalculateProjection();
+		}
+		if (ImGui::DragFloat("Near Plane Distance", &nearPlaneDistance))
+		{
+			RecalculateProjection();
+		}
+		if (ImGui::DragFloat("Far Plane Distance", &farPlaneDistance))
+		{
+			RecalculateProjection();
+		}
+	}
+}
+
 void GO_Camera::DrawCamera()
 {
 	Position = owner->transform->GetPosition();
 
 	CalculateViewMatrix();
+
 	glMatrixMode(GL_PROJECTION);
 	glLoadMatrixf(cameraFrustum.ProjectionMatrix().Transposed().ptr());
 	glMatrixMode(GL_MODELVIEW);
