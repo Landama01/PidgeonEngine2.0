@@ -1,5 +1,7 @@
 #pragma once
 #include "Component.h"
+#include "Geometry/AABB.h"
+#include "Geometry/OBB.h"
 
 class Mesh;
 
@@ -14,7 +16,12 @@ public:
 	void SetBounds();
 	void OnEditor() override;
 
+	Mesh* retMesh() { return mesh; };
+
 	Mesh* mesh;
 	bool faceNormals = false;
 	bool vertexNormals = false;
+
+	AABB globalAABB;
+	OBB globalOBB;
 };

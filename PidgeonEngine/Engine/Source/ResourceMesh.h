@@ -23,7 +23,6 @@ public:
 	void RenderMeshDebug(bool* vertexNormals, bool* faceNormals);
 	float3 GetVectorFromIndex(float* startValue);
 
-	void CleanUp();
 public:
 	// Buffers ID
 	uint id_index = 0;
@@ -41,9 +40,10 @@ public:
 	std::vector<float> texcoords;
 	std::vector<float> normals;
 
+	AABB localAABB;
+
 private:
 	float3 center = float3::zero;
 	float radius;
-
-	AABB localAABB;
+	
 };

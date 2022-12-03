@@ -65,7 +65,7 @@ void GO_Camera::RecalculateProjection()
 	cameraFrustum.horizontalFov = 2.f * atanf(tanf(cameraFrustum.verticalFov * 0.5f) * aspectRatio);
 }
 
-void GO_Camera::OnGui()
+void GO_Camera::OnEditor()
 {
 	if (ImGui::CollapsingHeader("Camera Editor"))
 	{

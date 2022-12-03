@@ -84,6 +84,7 @@ bool Editor::Init()
 bool Editor::Start()
 {
 	GameObject* newGameObject = App->scene->CreateGameObject("MainCamera");
+	newGameObject->AddComponent(ComponentType::CAMERA);
 	GO_camera = new GO_Camera(newGameObject);
 
     return true;
@@ -266,8 +267,10 @@ bool Editor::CleanUp()
 		delete tabs[i];
 		tabs[i] = nullptr;
 	}
-	tabs.clear();
 
+	tabs.clear();
+	fpsLog.clear();
+	msLog.clear();
 	return ret;
 }
 

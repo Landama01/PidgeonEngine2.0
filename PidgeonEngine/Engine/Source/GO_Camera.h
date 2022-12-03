@@ -18,7 +18,7 @@ public:
 	void CalculateViewMatrix();
 	void RecalculateProjection();
 
-	void OnGui();
+	void OnEditor();
 
 	bool SaveConfig(JsonParser& node) const;
 

@@ -12,6 +12,7 @@
 #include "Glew/include/glew.h"
 #include "glmath.h"
 #include "Geometry/Sphere.h"
+#include <MathGeoLib.h>
 
 Mesh::Mesh(unsigned int uid) : Resource(uid, ResourceType::MESH)
 {
@@ -19,11 +20,17 @@ Mesh::Mesh(unsigned int uid) : Resource(uid, ResourceType::MESH)
 
 Mesh::~Mesh()
 {
-	
-	glDeleteBuffers(1, &id_index);
-	glDeleteBuffers(1, &id_vertex);
-	glDeleteBuffers(1, &id_texcoords);
-	glDeleteBuffers(1, &id_normal);
+	if (id_index != -1)
+		glDeleteBuffers(1, &id_index);
+
+	if (id_vertex != -1)
+		glDeleteBuffers(1, &id_vertex);
+
+	if (id_texcoords != -1)
+		glDeleteBuffers(1, &id_texcoords);
+
+	if (id_normal != -1)
+		glDeleteBuffers(1, &id_normal);
 
 	UnloadFromMemory();
 }
