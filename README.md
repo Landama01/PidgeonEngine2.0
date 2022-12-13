@@ -12,7 +12,7 @@ Andreu Landa: https://github.com/Landama01
 
 ## Using Engine:
 
-- Camera controls:
+### Camera controls:
 	- LSHIFT: Use controls faster
 	- F: Front view
 	- E: Moving camera Up
@@ -25,7 +25,7 @@ Andreu Landa: https://github.com/Landama01
 	- Alt+Left click: orbit around the camera position
 	
 	
-- Short Cuts:
+### Short Cuts:
 - Numbers from 1-9 open and close the tabs
 - Ctrl+N: New Scene
 - Ctrl+S: Save Scene
@@ -42,7 +42,7 @@ Andreu Landa: https://github.com/Landama01
 - Alt+F: ResetViewRotation
 
 
-Important Issues found:
+### Important Issues found:
 - Deleting duplicated game objects may cause a crash
 - Deleting game objects in general, can cause a random crash
 - Resource manager does not create a custom file format
