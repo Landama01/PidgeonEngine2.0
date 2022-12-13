@@ -1,13 +1,13 @@
 # Pidgeon Engine
 
-##About Engine
+## About Engine
 This engine is a project developed in Videogame Engine subject from Game Design and Development Degree in CITM.
 
 Project repository: https://github.com/Landama01/PidgeonEngine
 
 Project Forked from: https://github.com/laiapachon/ThomasEngine
 
-##Team Members
+## Team Members
 Andreu Landa: https://github.com/Landama01
 
 Week 1 and 2:
