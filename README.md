@@ -10,53 +10,7 @@ Project Forked from: https://github.com/laiapachon/ThomasEngine
 ## Team Members
 Andreu Landa: https://github.com/Landama01
 
-Week 1 and 2:
-- We had added ImGui, MathGeoLib and Glew.
-
-Weel 3:
-- Enable and Disable buttons
-- Color material implementation
-- Texture enable and disable button implementation
-- Light enable and disable button implementation
-- Start searching about Wireframe mode
-
-
-Week 4: 
-- Primitives
-- Starting the implementation of FBX
-
-Week 5:
-- Implementing FBX by Buffer
-- Primitives by direct mode
-- File system implementation
-
-Week 6:
-- Devil implementation
-- FBX
-- Texture
-- Game Object
-- Inspector
-- Hierarchy
-
-New Features:
-
-- New Camera controls and frustrum culling
-- Scene and Game tabs work as they should on editor
-- Functional Mouse Picking with visible RayCast
-- Game Object duplication
-- New Scene Loaded by default
-- Mesh active state
-- Scene serialization
-- Bounding Boxes can be toggled on inspector
-- Guizmo for Game Object translation
-- Parent,child and empty Game Object creation
-- Camera component with its own configuration on inspector
-- Hierarchy able to parent, reparent, and unparent
-- Working Drag & Drop from Assets Folder directory
-- Several Memory leaks solved
-
-
-CONTROLS:
+## Using Engine:
 
 - Camera controls:
 	- LSHIFT: Use controls faster
