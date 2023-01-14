@@ -21,19 +21,15 @@ void AboutTab::Draw()
 {
 	if (ImGui::Begin(name.c_str(), &active))
 	{
-		ImGui::Text("Thomas Engine");
+		ImGui::Text("Pidgeon Engine");
 		ImGui::Text("This is a university project focused");
 		ImGui::Text("on the development of a video game engine");
 
 		ImGui::NewLine();
 		ImGui::Text("Developed by: ");
-		if (ImGui::MenuItem("Enric Morales"))
+		if (ImGui::MenuItem("Andreu Landa"))
 		{
-			ShellExecute(0, 0, "https://github.com/enricmc19", 0, 0, SW_SHOW);
-		}
-		if (ImGui::MenuItem("Laia Pachon"))
-		{
-			ShellExecute(0, 0, "https://github.com/laiapachon/ThomasEngine", 0, 0, SW_SHOW);
+			ShellExecute(0, 0, "https://github.com/Landama01/PidgeonEngine", 0, 0, SW_SHOW);
 		}
 
 		ImGui::NewLine();
@@ -61,7 +57,7 @@ void AboutTab::Draw()
 void AboutTab::PrintLicense()
 {
 	ImGui::Text("License:");
-	ImGui::Text("MIT License \nCopyright(c) 2022 Enric Morales Laia Pachon \n");
+	ImGui::Text("MIT License \nCopyright(c) 2022 Andreu Landa \n");
 	ImGui::NewLine();
 	ImGui::Text("Permission is hereby granted, free of charge, to any person obtaining a copy");
 	ImGui::Text("of this softwareand associated documentation files (the \"Software\"), to deal");

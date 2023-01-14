@@ -12,7 +12,7 @@
 
 #define INVALID_OGL_VALUE 0xffffffff
 #define ASSIMP_LOAD_FLAGS (aiProcess_Triangulate | aiProcess_GenSmoothNormals |  aiProcess_JoinIdenticalVertices )
-#define NAME_ENGINE "Thomas Engine"
+#define NAME_ENGINE "Pidgeon Engine"
 enum class LogType
 {
 	L_NORMAL,
@@ -88,5 +88,5 @@ enum update_status
 #define WIN_BORDERLESS false
 #define WIN_FULLSCREEN_DESKTOP false
 #define VSYNC true
-#define TITLE "Thomas Engine"
+#define TITLE "Pidgeon Engine"
 #define ORGANIZATION_NAME "UPC CITM"

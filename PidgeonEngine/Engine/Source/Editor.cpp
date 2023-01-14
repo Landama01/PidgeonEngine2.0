@@ -379,18 +379,6 @@ update_status Editor::ImGuiMenuBar()
 		}
 		if (ImGui::BeginMenu("Help"))
 		{
-			if (ImGui::MenuItem("Documentation"))
-			{
-				ShellExecute(0, 0, "https://github.com/laiapachon/ThomasEngine/wiki", 0, 0, SW_SHOW);
-			}
-			if (ImGui::MenuItem("Download latest"))
-			{
-				ShellExecute(0, 0, "https://github.com/laiapachon/ThomasEngine/releases", 0, 0, SW_SHOW);
-			}
-			if (ImGui::MenuItem("Report a bug"))
-			{
-				ShellExecute(0, 0, "https://github.com/laiapachon/ThomasEngine/issues", 0, 0, SW_SHOW);
-			}
 			if (ImGui::MenuItem("About"))
 			{
 				tabs[0]->active = !tabs[0]->active;
